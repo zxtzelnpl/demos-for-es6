@@ -1,0 +1,10 @@
+{
+  "editor.tabSize": 2, // 为了符合eslint的两个空格间隔原则
+  "eslint.enable": true, // 是否开启eslint
+  "eslint.options": {
+    "config-file": "/.eslintrc.js" // eslint配置文件
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
