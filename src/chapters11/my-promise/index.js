@@ -1,16 +1,30 @@
 // 1. 传入一个函数返回一个Promise
 // 2. 实现then函数，返回一个新的Promise
-// 3. reject和resolve状态会改变
+// 3. reject和resolve状态会改变，且不可逆
 // 4. 多个finally执行多次可以绑定多个finallyFun
+// 5. 如果then结果出来就是一个Promise
+// 6. 内部捕获错误，如果错误则直接执行
+
+const PENDING = 'pending'
+const RESOLVED = 'resolved'
+const REJECTED = 'rejected'
+
 class MyPromise {
-  constructor(func) {
-    this.value = undefined
-    this.STATE = 'pending'
+  constructor(exector) {
+    this.value = null
+    this.reason = null
+    this.STATE = PENDING
     this.finallyFuns = [] // finally绑定的数组
-    func(
-      this.resolve.bind(this),
-      this.reject.bind(this)
-    )
+
+    try {
+      exector(
+        this._resolve.bind(this),
+        this._reject.bind(this)
+      )
+    } catch (error) {
+      this._reject(error)
+    }
+
     return this
   }
 
@@ -28,7 +42,7 @@ class MyPromise {
 
   catch(catchFun) {
     if(!this.rejectedFun) {
-      this.rejectedFun = catchFun
+      return this.then(null, catchFun)
     }
   }
 
@@ -38,16 +52,111 @@ class MyPromise {
   }
 
   resolve(result) {
-    this.STATE = 'resolved'
-    const nextResult = typeof this.fulifildedFun === 'function' && this.fulifildedFun(result)
-    typeof this.afterFulifildedFun === 'function' && this.afterFulifildedFun(nextResult)
-    this.finallyFuns.forEach(finallyFun => finallyFun())
+    return new MyPromise(resolve => resolve(result))
   }
 
-  reject(error) {
-    this.STATE = 'rejected'
-    const nextError = typeof this.rejectedFun === 'function' && this.rejectedFun(error)
-    typeof this.afterRejectedFun === 'function' && this.afterRejectedFun(nextError)
-    this.finallyFuns.forEach(finallyFun => finallyFun())
+  reject(reason) {
+    return new MyPromise(
+      (undefined, reject) => reject(reason)
+    )
+  }
+
+  _resolve(result) {
+    if(this.STATE!==PENDING) { return }
+
+    this.STATE = RESOLVED
+    this.value = result
+    let nextResult
+
+    setTimeout(() => {
+      if(typeof this.fulifildedFun === 'function') {
+        nextResult = this.fulifildedFun(this.value)
+      }
+
+      if(nextResult instanceof MyPromise) {
+        nextResult.then((_nextResult) => {
+          typeof this.afterFulifildedFun === 'function' && this.afterFulifildedFun(_nextResult)
+        })
+      } else {
+        typeof this.afterFulifildedFun === 'function' && this.afterFulifildedFun(nextResult)
+      }
+      this.finallyFuns.forEach(finallyFun => finallyFun())
+    })
+  }
+
+  _reject(reason) {
+    if(this.STATE!==PENDING) { return }
+
+    this.STATE = REJECTED
+    this.reason = reason
+    let nextReason
+
+    setTimeout(() => {
+      if(typeof this.rejectedFun === 'function') {
+        nextReason = this.rejectedFun(this.reason)
+      }
+
+      if(nextReason instanceof MyPromise) {
+        nextReason.then(() => {
+          typeof this.afterRejectedFun === 'function' && this.afterRejectedFun(nextReason)
+        })
+      } else {
+        typeof this.afterRejectedFun === 'function' && this.afterRejectedFun(nextReason)
+      }
+      this.finallyFuns.forEach(finallyFun => finallyFun())
+    })
   }
 }
+
+// 测试案例一
+// const promise1 = new MyPromise(resolve => {
+//   setTimeout(() => {
+//     console.log('promise1')
+//     resolve(1)
+//   }, 1000)
+// })
+
+// const promise2 = promise1.then(() => {
+//   console.log('promise2')
+// }).then(() => {
+//   console.log('promise3')
+// }).finally(() => {
+//   console.log('promise3 finally')
+// })
+
+// console.log(promise1)
+// console.log(promise2)
+
+// 测试案例二
+const promise1 = new MyPromise(resolve=> {
+  setTimeout(()=>{
+    resolve('promise1')
+  }, 1000)
+})
+
+let promise2
+
+const makePromise2 = (reason) => {
+  console.log('makePromise2')
+  console.log(reason)
+  return new MyPromise(resolve=> {
+    setTimeout(()=>{
+      resolve('promise2')
+    }, 1000)
+  })
+}
+
+const promise3 = promise1.then(res=> {
+  promise2 = makePromise2(res)
+  return promise2
+}).then(() => {
+  console.log('promise3 then')
+})
+
+// setTimeout(() => {
+//   console.log(promise1)
+//   console.log(promise2)
+//   console.log(promise3)
+//   console.log(promise2 === promise3)
+// }, 4000)
+
