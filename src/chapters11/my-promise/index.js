@@ -51,11 +51,11 @@ class MyPromise {
     return this
   }
 
-  resolve(result) {
+  static resolve(result) {
     return new MyPromise(resolve => resolve(result))
   }
 
-  reject(reason) {
+  static reject(reason) {
     return new MyPromise(
       (undefined, reject) => reject(reason)
     )
@@ -128,30 +128,30 @@ class MyPromise {
 // console.log(promise2)
 
 // 测试案例二
-const promise1 = new MyPromise(resolve=> {
-  setTimeout(()=>{
-    resolve('promise1')
-  }, 1000)
-})
+// const promise1 = new MyPromise(resolve=> {
+//   setTimeout(()=>{
+//     resolve('promise1')
+//   }, 1000)
+// })
 
-let promise2
+// let promise2
 
-const makePromise2 = (reason) => {
-  console.log('makePromise2')
-  console.log(reason)
-  return new MyPromise(resolve=> {
-    setTimeout(()=>{
-      resolve('promise2')
-    }, 1000)
-  })
-}
+// const makePromise2 = (reason) => {
+//   console.log('makePromise2')
+//   console.log(reason)
+//   return new MyPromise(resolve=> {
+//     setTimeout(()=>{
+//       resolve('promise2')
+//     }, 1000)
+//   })
+// }
 
-const promise3 = promise1.then(res=> {
-  promise2 = makePromise2(res)
-  return promise2
-}).then(() => {
-  console.log('promise3 then')
-})
+// const promise3 = promise1.then(res=> {
+//   promise2 = makePromise2(res)
+//   return promise2
+// }).then(() => {
+//   console.log('promise3 then')
+// })
 
 // setTimeout(() => {
 //   console.log(promise1)
@@ -160,3 +160,14 @@ const promise3 = promise1.then(res=> {
 //   console.log(promise2 === promise3)
 // }, 4000)
 
+// 测试案例三
+const promise1 = MyPromise.resolve(1)
+const promise2 = promise1.then(() => {console.log('promise2')})
+
+const promise3 = MyPromise.reject(2)
+const promise4 = promise3.then(() => {console.log('promise4')})
+
+console.log(promise1)
+console.log(promise2)
+console.log(promise3)
+console.log(promise4)
