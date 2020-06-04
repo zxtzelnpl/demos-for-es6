@@ -5,7 +5,7 @@ module.exports = {
     node: true
   },
   parserOptions: {
-    "ecmaVersion": 6,
+    "ecmaVersion": 8,
     "sourceType": "module"
  },
   rules: {
@@ -35,6 +35,7 @@ module.exports = {
       {
         'ignoreReadBeforeAssign': false
       }
-    ]
+    ],
+    "allow": ["asyncMethods"]
   }
 }

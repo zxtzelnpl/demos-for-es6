@@ -7,4 +7,6 @@
 
 // import './error/normal.js'
 
-import './getAllTypes/_test'
+// import './getAllTypes/_test'
+
+import './各个异步执行顺序的问题/index'

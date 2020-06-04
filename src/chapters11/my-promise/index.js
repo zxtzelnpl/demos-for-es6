@@ -32,12 +32,22 @@ class MyPromise {
     this.fulifildedFun = fulifildedFun
     this.rejectedFun = rejectedFun
 
-    return new MyPromise(
-      (resolve, reject) => {
-        this.afterFulifildedFun = resolve
-        this.afterRejectedFun = reject
-      }
-    )
+    if(this.STATE === PENDING) {
+      return new MyPromise(
+        (resolve, reject) => {
+          this.afterFulifildedFun = resolve
+          this.afterRejectedFun = reject
+        }
+      )
+    }
+    if(this.STATE === RESOLVED && typeof fulifildedFun === 'function') {
+      return Promise.resolve(this.value)
+    }
+
+    if(this.STATE === REJECTED && typeof rejectedFun === 'function') {
+      return Promise.reject(this.reason)
+    }
+
   }
 
   catch(catchFun) {
@@ -52,10 +62,18 @@ class MyPromise {
   }
 
   static resolve(result) {
+    if(result instanceof MyPromise) {
+      return result
+    }
+
     return new MyPromise(resolve => resolve(result))
   }
 
   static reject(reason) {
+    if(reason instanceof MyPromise) {
+      return reason
+    }
+
     return new MyPromise(
       (undefined, reject) => reject(reason)
     )
