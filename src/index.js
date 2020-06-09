@@ -9,4 +9,11 @@
 
 // import './getAllTypes/_test'
 
-import './各个异步执行顺序的问题/index'
+// import './各个异步执行顺序的问题/index'
+
+const map = new Map()
+map.add('name', 'zxt')
+
+const promise = new Promise()
+
+const a = 'zhaoxuetong'
