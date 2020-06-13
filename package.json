@@ -24,6 +24,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "core-js": "3"
+    "core-js": "3",
+    "lodash-es": "^4.17.15"
   }
 }
