@@ -12,7 +12,7 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist')
   },
-  devtool: false,
+  devtool: 'eval',
   devServer: {
     contentBase: './dist',
     publicPath: '/',
