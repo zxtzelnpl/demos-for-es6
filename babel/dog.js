@@ -9,7 +9,7 @@ console.log(ferret); // expected output: "The quick brown fox jumps over the laz
 
 console.log(monkey);
 
-export {
+export default {
   ferret,
   monkey
 }

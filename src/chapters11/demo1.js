@@ -8,7 +8,7 @@
 // promise3
 // promise1
 
-const log = value=> console.log(value)
+const log = console.log
 
 const promise1 = new Promise(function(resolve) {
   setTimeout(() => {

@@ -1,24 +1,28 @@
-import "core-js/modules/es.array.includes";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.map";
-import "core-js/modules/es.object.keys";
-import "core-js/modules/es.object.to-string";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.string.iterator";
-import "core-js/modules/web.dom-collections.iterator";
-import user from './user';
-import dog from 'dog.js';
+"use strict";
 
-var a = function a() {
+require("core-js/modules/web.immediate");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _user = _interopRequireDefault(require("./user"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const a = () => {
   console.log('b');
 };
 
-var array = [1, 2, 3, 4];
-console.log(array.includes(2));
-var obj = {
-  a: 'a',
-  b: 'b'
+const map = new Map();
+const b = [1, 2];
+const c = new Promise();
+console.log(b.includes(1));
+const MyName = {
+  a,
+  user: _user.default,
+  map
 };
-console.log(Object.keys(obj));
-var promise1 = new Promise();
-var map = new Map();
+var _default = MyName;
+exports.default = _default;

@@ -5,8 +5,9 @@ const run = (taskDef) => {
 
   function step() {
     if(!result.done) {
-      Promise
-      .resolve(result.value)
+      // Promise
+      // .resolve(result.value)
+      result.value
       .then(res => {
         result = task.next(res)
         step()
@@ -17,7 +18,6 @@ const run = (taskDef) => {
       })
     }
   }
-
   step()
 }
 
